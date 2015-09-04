@@ -1,0 +1,472 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Single_Mode_Avg5</title>
+<script type="text/javascript" charset="utf-8" src="cordova-2.0.0.js"></script>
+  <script type="text/javascript" src="thumbs.js"></script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1"> 
+
+  <style type="text/css">
+    * {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+    }
+    
+
+    h1 {
+      background: -webkit-gradient(linear, left top, left bottom, from(#0099ff), to(#2300e0));
+      color:#ffffff;
+      font-family: kaushan-script, serif;
+      font-weight:bold;
+      font-size:85%;
+      text-shadow: 0px 1px 1px #030726;
+      border:2px solid #a1a1a1;
+	  padding:10px 40px; 
+	  border-radius:25px;
+    }
+    
+    h2 {
+    font-family: 'Candal', sans-serif;
+    font-size:30px;
+    font-weight:bold;
+    }
+    
+     body {
+      background: #dbf0fa;
+      color:#000000;
+      font-family:Helvetica, sans-serif;
+      font-weight:bold;
+      text-shadow: 0px 1px 0px #FFffff;
+    }
+    
+    .label {
+    	color:#ffffff;
+      font-family:Helvetica, sans-serif;
+    }
+    
+    .buttonSTART {
+      background-color:#AEBBCD;
+      border-color:#516885;
+      border-radius:8px;
+      border-style:solid;
+      border-width:0px 1px 1px 0px;
+      display:block;
+      margin:10px auto;
+      padding:10px 8px;
+      text-align:center;
+      width:76%;
+      box-shadow: 5px 5px 2px #888888;
+    }
+.button {
+   border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 5px 10px  ;
+   
+   -webkit-border-radius: 24px;
+   -moz-border-radius: 24px;
+   border-radius: 24px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 15px;
+   font-family: Helvetica, Arial, Sans-Serif;
+   text-decoration: none;
+   vertical-align: middle;
+   
+   
+   }
+.button:hover {
+   border-top-color: #28597a;
+   background: #28597a;
+   color: #ccc;
+   }
+.button:active {
+   border-top-color: #1f9100;
+   background: #1f9100;
+   }    
+
+
+  </style>
+
+<script type="text/javascript">
+var running = false;
+var s="";  
+var ss=[];
+
+var promedio=[];
+var temp = new Array();
+var tempprom = new Array();
+var temp2=0;
+var promtemp2=0;
+var fin=0;
+var cont=0,c=0;
+var lastScramble;
+    window.addEventListener('load', function() {
+    
+    megascramble([["U","D"],["R","L"],["F","B"]] , ["","2","'"]);
+    
+    document.getElementById("scramble").innerHTML = "Scramble: "+ ss
+    
+        var callback = function(e) { 
+        if (running) {
+         chronoStop();
+		 lastScramble = ss;
+    megascramble([["U","D"],["R","L"],["F","B"]] , ["","2","'"]);
+    
+    if(fin<5){
+    document.getElementById("scramble").innerHTML = "Scramble: "+ ss
+    for(cont=4;cont>0;cont--){
+        c=cont+1;	 
+        window.localStorage.setItem("scr"+c, window.localStorage.getItem("scr"+cont) );
+        }
+        window.localStorage.setItem("scr1", ss);
+    }
+    temp2++;
+    promtemp2++;
+    
+        }
+        console.log(e.type); };
+        
+        var callback1 = function(e) { 
+        
+        
+        if (running == false){
+        chronoStart();
+        running = true;
+        }
+        else {
+        	
+        	llenar();
+        	fin++;
+         //running=false;
+         // alert(fin);
+          if(fin>=5){running=true;}else{running=false;}
+          
+          
+         }};
+        document.getElementById('touchstart').addEventListener('touchstart', callback , false);
+        document.getElementById('touchstart').addEventListener('touchend', callback1, false);
+        
+        
+        
+        
+    }, false);
+
+
+var startTime = 0
+var start = 0
+var end = 0
+var diff = 0
+var timerID = 0
+
+
+
+function rndEl(x){return x[Math.floor(Math.random()*x.length)];}
+            function isArray(obj){
+                if(typeof obj=='object'){
+                    var test = obj.constructor.toString().match(/array/i); 
+                    return (test != null);
+                }
+                return false;
+            }
+            
+            
+function megascramble(turns, suffixes){
+
+            var donemoves=[];
+            var lastaxis;
+            var i,j,k;
+            var len=25;
+            var num=1;
+
+            for(i=0;i<num;i++){
+                var s="";
+
+                lastaxis=-1;
+                for(j=0;j<len;j++){
+                    var done=0;
+                    do{
+                        var first=Math.floor(Math.random()*turns.length);
+                        var second=Math.floor(Math.random()*turns[first].length);
+                        if(first!=lastaxis||donemoves[second]==0){
+                            if(first==lastaxis){
+                                donemoves[second]=1;
+                                if(isArray(turns[first][second])){
+                                    s+=rndEl(turns[first][second])+rndEl(suffixes)+" ";
+                                }else{
+                                    s+=turns[first][second]+rndEl(suffixes)+" ";
+                                }
+                            }else{
+                                for(k=0;k<turns[first].length;k++){donemoves[k]=0;}
+                                lastaxis=first;
+                                donemoves[second]=1;
+                                if(isArray(turns[first][second])){
+                                    s+=rndEl(turns[first][second])+rndEl(suffixes)+" ";
+                                }else{
+                                    s+=turns[first][second]+rndEl(suffixes)+" ";
+                                }
+                            }
+                            done=1;
+                        }
+                    }while(done==0);
+                }
+                //alert('s:' +s);
+                ss=s;
+            }
+
+        }
+        
+function llenar(){
+                var cadenatiempos="";
+                var promtiempos=0;
+                //Esta forma de asignar el elemento del arreglo a una variable parece  que no esta bien...
+                 
+               
+                //alert(min) //sale undefined, y x ende lo demas sale mal.
+               
+              
+                for (i=0;i<5;i++){ 
+                   
+                    if(temp[i]!=null){
+                        
+                      //  alert('CANTIDAD'+temp[0])
+                        
+                        cadenatiempos='&nbsp;&nbsp;'+ temp[i]+cadenatiempos+'&nbsp;&nbsp;';
+                        for(cont=4;cont>0;cont--){
+                            c=cont+1;	 
+                            window.localStorage.setItem("ti"+c, window.localStorage.getItem("ti"+cont) );
+                            }
+                            window.localStorage.setItem("ti1", temp[i]);
+                    }
+                }
+                
+                
+                
+                document.getElementById("times2").innerHTML= cadenatiempos;                
+                 
+                for (j=0;j<tempprom.length;j++){ 
+                    
+                    if(j==0){
+                     // alert('HOLA ' + tempprom.length)
+                      var  min= tempprom[3];                      
+                      var  max= tempprom[3];
+                        
+                        //alert(min)
+                    }
+
+                    if(tempprom[j] < min){min=tempprom[j];}
+                    if(tempprom[j]>max){max=tempprom[j];}
+                         
+                         
+                    if(tempprom[j]>0){
+                       
+                        promtiempos=tempprom[j]+promtiempos;
+                       // alert(promtiempos);
+                    }
+                }
+                        
+                //Promedio de 5 sin eliminar max y min:                  
+                //document.getElementById("times").innerHTML= 'Promedio: '+ (promtiempos/5000).toFixed(2) + ' sec';
+           
+           
+           
+                //Promedio de 5 eliminando el maximo y minimo:
+                //Como el min y max son undefined el promedio sale variable NAN.   
+                var ayu=0;
+            
+             //alert(max)
+             //alert(min)
+                ayu=parseFloat(promtiempos)-parseFloat(min)-parseFloat(max);
+       if(min==undefined){document.getElementById("prom").innerHTML=  ' sec';}else{    
+                document.getElementById("prom").innerHTML=  (ayu/3000).toFixed(2) + ' sec';
+                 
+                 }
+            }
+
+function chrono(){
+	end = new Date()
+	diff = end - start
+	diff = new Date(diff)
+	var msec = diff.getMilliseconds()
+	var sec = diff.getSeconds()
+	var min = diff.getMinutes()
+	var hr = diff.getHours()-1
+	
+    var msectemp=msec;
+    var sectemp=sec;
+    var mintemp=min;
+	
+	
+	if (min < 10){
+		min = "0" + min
+	}
+	if (sec < 10){
+		sec = "0" + sec
+	}
+	if(msec < 10){
+		msec = "00" +msec
+	}
+	else if(msec < 100){
+		msec = "0" +msec
+	}
+    if(min==0){
+        document.getElementById("chronotime").innerHTML =sec + "." + (msec/10).toFixed(0)
+    }
+    else{
+        document.getElementById("chronotime").innerHTML = min + ":" + sec + "." + (msec/10).toFixed(0)   
+    
+    }
+	timerID = setTimeout("chrono()", 10)
+	if(min==0){     
+        temp[temp2] = sec + "." + (msec/10).toFixed(0) +"  "; 
+    }
+    else{
+    
+        temp[temp2] = min + ":" + sec + "." + (msec/10).toFixed(0) +"  "; 
+    
+    
+    }
+    tempprom[promtemp2]= msectemp + sectemp*1000+mintemp*60*1000;
+    prueba=msectemp+ sectemp*1000+mintemp*60*1000;
+}
+function chronoStart(){
+	//document.chronoForm.startstop.value = "stop!"
+	//document.chronoForm.startstop.onclick = chronoStop
+	
+	document.chronoForm.reset.onclick = chronoReset
+	
+	
+	start = new Date();
+	
+	
+	chrono()
+	
+
+	
+}
+function chronoContinue(){
+	document.chronoForm.startstop.value = "stop!"
+	document.chronoForm.startstop.onclick = chronoStop
+	document.chronoForm.reset.onclick = chronoReset
+	start = new Date()-diff
+	start = new Date(start)
+	chrono()
+}
+function chronoReset(){
+	document.getElementById("chronotime").innerHTML = "0.0"
+	running=false; 
+	start = new Date()
+	//alert('LOLÂ¿')
+	temp2=0;
+	promtemp2=0; 
+	fin=0;
+	
+	for(var i=0 ;i<5;i++){
+   temp[i]=null;
+    }
+    
+    for(var i=0 ;i<5;i++){
+   tempprom[i]=null;
+    }
+    
+    promtiempos=null;
+	llenar();
+	
+}
+function chronoStopReset(){
+	document.getElementById("chronotime").innerHTML = "0.0"
+	document.chronoForm.startstop.onclick = chronoStart
+	
+}
+function chronoStop(){
+	//document.chronoForm.startstop.value = "start!"
+
+	//document.chronoForm.reset.onclick = chronoStopReset
+	clearTimeout(timerID)
+}
+
+
+//-->
+</script>
+    <script type="text/javascript">
+      function postToWall() {
+        var params = {};
+        params['message'] = 'Scramble: '+lastScramble+'   ------ Time: '+document.getElementById("chronotime").innerHTML;
+        params['name'] = 'Cube Profiler Pro';
+        params['link'] = 'http://worldcubeassociation.org/results/events.php?eventId=333&regionId=Peru&years=&show=100%2BPersons&average=Average';
+        params['picture'] = 'https://dl.dropbox.com/u/73225795/3x3big.png';
+        params['description'] = 'Desarrollo de apliaciones moviles';
+        
+        FB.api('/me/feed', 'post', params, function(response) {
+          if (!response || response.error) {
+            alert('Error occured');
+          } else {
+            alert('Post ID: ' + response.id);
+          }
+        });
+      }
+    </script>
+
+</head>
+<body>
+
+<div data-role="page" class="type-home">
+
+<div data-role="header" data-position="inline">
+<a href="menu.html"> 
+                        <span class="button"><img src="img/back.png" style=vertical-align:middle;>					Back</span></a>
+
+<h1 align="center">Cube Profiler Pro</h1>
+
+                </div> 
+
+</div>
+<div data-role="content">
+
+
+<div>
+	<p align="center"><span id="scramble">Loading...</span></p>
+</div>
+					
+<b></b>
+
+<div data-role="listview" data-theme="b" data-content-theme="d" >
+							<ul data-role="listview">
+								<li data-role="list-divider"><img src="img/chrono.png" style=vertical-align:middle;> Times: <p><span id="times2"></span></p></li>
+								<h2><p align="center"><span id="chronotime">0.0</span></p></h2>
+<form name="chronoForm">
+    <div id="touchstart" class="buttonSTART">Start</div>  
+    <input type="button" name="reset" value="reset!" onClick="chronoReset()" />
+</form>
+            <h3>Average 5:</h3>
+
+            <li ><p><img src="img/3x3mini.png" style=vertical-align:middle;><span id="prom"></span></p></li>
+	
+							</ul>
+
+</div>
+
+</div>
+    <div id="fb-root"></div>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <script>
+      FB.init({ 
+        appId:"209711549153688", cookie:true, 
+        status:true, xfbml:true
+      });
+    </script>
+    <fb:login-button perms="publish_stream">Login with Facebook</fb:login-button>
+    <a href="javascript:postToWall()">Post To Wall</a>
+
+
+
+</body>
+</html>
